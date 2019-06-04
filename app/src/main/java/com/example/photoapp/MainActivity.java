@@ -13,6 +13,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+    //初期に表示するダミー画像
     private static final Integer[] photos = {
             R.drawable.dummy, R.drawable.dummy2
     };
@@ -28,16 +29,23 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(mLayoutManager);
 
         //imageをコピー
-        List<Integer> itemImages = new ArrayList<>(Arrays.asList(photos));
+        final List<Integer> itemImages = new ArrayList<>(Arrays.asList(photos));
 
-        RecyclerView.Adapter mAdapter = new timelineViewAdapter(itemImages);
-        //recyclerView.setAdapter(mAdapter);
+        final RecyclerView.Adapter mAdapter = new timelineViewAdapter(itemImages);
+        recyclerView.setAdapter(mAdapter);
 
         Button button = findViewById(R.id.postButton);
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(itemImages.size() % 2 == 0) {
+                    itemImages.add(0, R.drawable.dummy2);
+                } else {
+                    itemImages.add(0, R.drawable.dummy);
+                }
+
+                mAdapter.notifyItemInserted(0);
             }
         });
     }
