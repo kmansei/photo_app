@@ -48,5 +48,7 @@ public class MainActivity extends AppCompatActivity {
                 mAdapter.notifyItemInserted(0);
             }
         });
+
+
     }
 }

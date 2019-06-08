@@ -33,7 +33,15 @@ public class timelineViewAdapter extends RecyclerView.Adapter<timelineViewAdapte
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
+        final Integer data;
+        data = iImages.get(position);
         holder.imageView.setImageResource(iImages.get(position));
+        holder.imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                removeFromDataset(data);
+            }
+        });
     }
 
     @Override
@@ -41,4 +49,13 @@ public class timelineViewAdapter extends RecyclerView.Adapter<timelineViewAdapte
         return iImages.size();
     }
 
+    protected void removeFromDataset(Integer data){
+        for(int i=0; i<iImages.size(); i++){
+            if(iImages.get(i).equals(data)){
+                iImages.remove(i);
+                notifyItemRemoved(i);
+                break;
+            }
+        }
+    }
 }
