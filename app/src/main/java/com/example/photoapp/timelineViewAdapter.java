@@ -1,7 +1,9 @@
 package com.example.photoapp;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
@@ -20,6 +22,8 @@ public class timelineViewAdapter extends RecyclerView.Adapter<timelineViewAdapte
 
     private List<Integer> iImages;
     private Context context;
+    private Activity activity;
+    private static final int RESULTCODE = 1;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView;
@@ -30,9 +34,10 @@ public class timelineViewAdapter extends RecyclerView.Adapter<timelineViewAdapte
         }
     }
 
-    public timelineViewAdapter(Context context, List<Integer> itemImages) {
+    public timelineViewAdapter(Activity activity, List<Integer> itemImages) {
         this.iImages = itemImages;
-        this.context = context;
+        this.activity = activity;
+        this.context = activity;
     }
 
     @Override
@@ -49,9 +54,11 @@ public class timelineViewAdapter extends RecyclerView.Adapter<timelineViewAdapte
         holder.imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //final int posi = holder.getAdapterPosition();
                 //removeFromDataset(data, position);
-                showDialog(data, position, holder.imageView);
+                //showDialog(data, position, holder.imageView);
+                Intent intent = new Intent(context, ImageViewActivity.class);
+                intent.putExtra("ImageData", data);
+                activity.startActivityForResult(intent, RESULTCODE);
             }
         });
     }
