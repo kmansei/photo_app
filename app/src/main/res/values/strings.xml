@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">PhotoApp</string>
     <string name="post">POST</string>
+    <string name="exit">EXIT</string>
     <string name="image_view">image_view</string>
     <string name="title_activity_image_view">ImageViewActivity</string>
 </resources>

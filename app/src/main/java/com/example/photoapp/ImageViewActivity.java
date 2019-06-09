@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.ImageView;
 
 public class ImageViewActivity extends Activity {
@@ -21,7 +22,10 @@ public class ImageViewActivity extends Activity {
 
         ImageView imageView = findViewById(R.id.image_view);
         imageView.setImageResource(data);
-        imageView.setOnClickListener(new View.OnClickListener() {
+
+
+        Button button = findViewById(R.id.exitButton);
+        button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // 拡大した画像をタップするともとの画面に戻る
