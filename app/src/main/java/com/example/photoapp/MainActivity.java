@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
         //imageをコピー
         final List<Integer> itemImages = new ArrayList<>(Arrays.asList(photos));
 
-        final RecyclerView.Adapter mAdapter = new timelineViewAdapter(itemImages);
+        final RecyclerView.Adapter mAdapter = new timelineViewAdapter(this, itemImages);
         recyclerView.setAdapter(mAdapter);
 
         Button button = findViewById(R.id.postButton);
@@ -48,5 +48,7 @@ public class MainActivity extends AppCompatActivity {
                 mAdapter.notifyItemInserted(0);
             }
         });
+
+
     }
 }
