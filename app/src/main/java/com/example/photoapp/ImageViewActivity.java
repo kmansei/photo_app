@@ -2,6 +2,8 @@ package com.example.photoapp;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
@@ -21,11 +23,11 @@ public class ImageViewActivity extends Activity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_image_view);
 
-        Intent intent = getIntent();
-        Integer data = intent.getIntExtra("ImageData", 0);
+        byte[] jpgArray = getIntent().getByteArrayExtra("ImageData");
+        Bitmap bmp = BitmapFactory.decodeByteArray(jpgArray, 0, jpgArray.length);
 
         final ImageView imageView = findViewById(R.id.image_view);
-        imageView.setImageResource(data);
+        imageView.setImageBitmap(bmp);
 
         class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
             @Override
@@ -39,7 +41,6 @@ public class ImageViewActivity extends Activity {
         }
 
         detector = new ScaleGestureDetector(this,new ScaleListener());
-
 
         Button button = findViewById(R.id.exitButton);
         button.setOnClickListener(new View.OnClickListener() {
