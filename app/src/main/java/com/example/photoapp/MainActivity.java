@@ -38,6 +38,9 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setAdapter(mAdapter);
 
+        Post tmp = new Post(null);
+        posts.add(tmp);
+
         //投稿ボタンが押されたら
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -46,9 +49,6 @@ public class MainActivity extends AppCompatActivity {
                 intent.addCategory(Intent.CATEGORY_OPENABLE);
                 intent.setType("image/*");
                 startActivityForResult(intent, RESULT_PICK_IMAGEFILE);
-
-                //itemImages.add(0, R.drawable.dummy);
-                //mAdapter.notifyItemInserted(0);
             }
         });
     }

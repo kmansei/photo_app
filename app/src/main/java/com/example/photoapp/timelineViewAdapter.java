@@ -17,6 +17,8 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 
+import java.io.ByteArrayOutputStream;
+import java.nio.ByteBuffer;
 import java.util.List;
 
 public class timelineViewAdapter extends RecyclerView.Adapter<timelineViewAdapter.ViewHolder> {
@@ -28,7 +30,6 @@ public class timelineViewAdapter extends RecyclerView.Adapter<timelineViewAdapte
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView;
-        Bitmap bmp;
 
         public ViewHolder(View v) {
             super(v);
@@ -62,11 +63,15 @@ public class timelineViewAdapter extends RecyclerView.Adapter<timelineViewAdapte
         holder.imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //removeFromDataset(data, position);
-                //showDialog(data, position, holder.imageView);
-                //Intent intent = new Intent(context, ImageViewActivity.class);
-                //intent.putExtra("ImageData", data);
-                //activity.startActivityForResult(intent, RESULTCODE);
+                Intent intent = new Intent(context, ImageViewActivity.class);
+
+                //bitmap→byte配列(jpg)に変換
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                byte[] jpgarr = baos.toByteArray();
+
+                intent.putExtra("ImageData", jpgarr);
+                activity.startActivityForResult(intent, RESULTCODE);
             }
         });
     }
