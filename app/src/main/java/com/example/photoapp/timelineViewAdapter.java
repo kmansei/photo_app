@@ -1,22 +1,13 @@
 package com.example.photoapp;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.Point;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.support.v4.app.NavUtils;
 import android.support.v7.widget.RecyclerView;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.ImageView;
 
 import java.io.ByteArrayOutputStream;
@@ -74,33 +65,5 @@ public class timelineViewAdapter extends RecyclerView.Adapter<timelineViewAdapte
     @Override
     public int getItemCount() {
         return posts.size();
-    }
-
-    protected void removeFromDataset(Integer data, int position){
-        posts.remove(position);
-        notifyItemRemoved(position);
-    }
-
-    protected void showDialog(Integer data, int position, ImageView tapView){
-        ImageView imageView = new ImageView(context);
-        Bitmap bitmap = ((BitmapDrawable)tapView.getDrawable()).getBitmap();
-        imageView.setImageBitmap(bitmap);
-        // ディスプレイの幅を取得する（API 13以上）
-        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        Display display = wm.getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        int width = size.x;
-
-        float factor =  width / bitmap.getWidth();
-        imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-        // ダイアログを作成する
-        Dialog dialog = new Dialog(context);
-        // タイトルを非表示にする
-        dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(imageView);
-        dialog.getWindow().setLayout((int)(bitmap.getWidth()*factor), (int)(bitmap.getHeight()*factor));
-        // ダイアログを表示する
-        dialog.show();
     }
 }
