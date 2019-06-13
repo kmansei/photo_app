@@ -15,7 +15,6 @@ import android.widget.Button;
 import java.io.FileDescriptor;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -26,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
 
     RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
     final RecyclerView.Adapter mAdapter = new timelineViewAdapter(this, posts);
+    RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,12 +34,9 @@ public class MainActivity extends AppCompatActivity {
 
         Button button = findViewById(R.id.postButton);
 
-        RecyclerView recyclerView = findViewById(R.id.timeline);
+        recyclerView = findViewById(R.id.timeline);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setAdapter(mAdapter);
-
-        Post tmp = new Post(null);
-        posts.add(tmp);
 
         //投稿ボタンが押されたら
         button.setOnClickListener(new View.OnClickListener() {
@@ -67,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
                     Post post = new Post(bmp);
                     posts.add(0, post);
                     mAdapter.notifyItemInserted(0);
+                    recyclerView.smoothScrollToPosition(0);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

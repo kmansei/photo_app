@@ -4,9 +4,11 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.support.v4.app.NavUtils;
 import android.support.v7.widget.RecyclerView;
 import android.view.Display;
@@ -18,7 +20,6 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 
 import java.io.ByteArrayOutputStream;
-import java.nio.ByteBuffer;
 import java.util.List;
 
 public class timelineViewAdapter extends RecyclerView.Adapter<timelineViewAdapter.ViewHolder> {
@@ -51,14 +52,8 @@ public class timelineViewAdapter extends RecyclerView.Adapter<timelineViewAdapte
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        final Bitmap bmp;
-        bmp = posts.get(position).bmp;
-
-        if (bmp == null){
-            holder.imageView.setImageResource(R.drawable.dummy);
-        }else{
-            holder.imageView.setImageBitmap(bmp);
-        }
+        final Bitmap bmp = posts.get(position).bmp;
+        holder.imageView.setImageBitmap(bmp);
 
         holder.imageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -84,7 +79,6 @@ public class timelineViewAdapter extends RecyclerView.Adapter<timelineViewAdapte
     protected void removeFromDataset(Integer data, int position){
         posts.remove(position);
         notifyItemRemoved(position);
-
     }
 
     protected void showDialog(Integer data, int position, ImageView tapView){

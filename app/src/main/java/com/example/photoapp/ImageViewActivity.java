@@ -23,15 +23,11 @@ public class ImageViewActivity extends Activity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_image_view);
 
-        byte[] jpgarr = getIntent().getByteArrayExtra("ImageData");
-        Bitmap bmp = BitmapFactory.decodeByteArray(jpgarr, 0, jpgarr.length);
+        byte[] jpgArray = getIntent().getByteArrayExtra("ImageData");
+        Bitmap bmp = BitmapFactory.decodeByteArray(jpgArray, 0, jpgArray.length);
 
         final ImageView imageView = findViewById(R.id.image_view);
-        if(bmp == null){
-            imageView.setImageResource(R.drawable.dummy);
-        } else {
-            imageView.setImageBitmap(bmp);
-        }
+        imageView.setImageBitmap(bmp);
 
         class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
             @Override
@@ -45,7 +41,6 @@ public class ImageViewActivity extends Activity {
         }
 
         detector = new ScaleGestureDetector(this,new ScaleListener());
-
 
         Button button = findViewById(R.id.exitButton);
         button.setOnClickListener(new View.OnClickListener() {
