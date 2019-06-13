@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
+import android.support.v4.app.NavUtils;
 import android.support.v7.widget.RecyclerView;
 import android.view.Display;
 import android.view.LayoutInflater;
@@ -20,13 +21,14 @@ import java.util.List;
 
 public class timelineViewAdapter extends RecyclerView.Adapter<timelineViewAdapter.ViewHolder> {
 
-    private List<Integer> iImages;
+    private List<Post> posts;
     private Context context;
     private Activity activity;
     private static final int RESULTCODE = 1;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView;
+        Bitmap bmp;
 
         public ViewHolder(View v) {
             super(v);
@@ -34,8 +36,8 @@ public class timelineViewAdapter extends RecyclerView.Adapter<timelineViewAdapte
         }
     }
 
-    public timelineViewAdapter(Activity activity, List<Integer> itemImages) {
-        this.iImages = itemImages;
+    public timelineViewAdapter(Activity activity, List<Post> postLists) {
+        this.posts= postLists;
         this.activity = activity;
         this.context = activity;
     }
@@ -48,28 +50,34 @@ public class timelineViewAdapter extends RecyclerView.Adapter<timelineViewAdapte
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        final Integer data;
-        data = iImages.get(position);
-        holder.imageView.setImageResource(data);
+        final Bitmap bmp;
+        bmp = posts.get(position).bmp;
+
+        if (bmp == null){
+            holder.imageView.setImageResource(R.drawable.dummy);
+        }else{
+            holder.imageView.setImageBitmap(bmp);
+        }
+
         holder.imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //removeFromDataset(data, position);
                 //showDialog(data, position, holder.imageView);
-                Intent intent = new Intent(context, ImageViewActivity.class);
-                intent.putExtra("ImageData", data);
-                activity.startActivityForResult(intent, RESULTCODE);
+                //Intent intent = new Intent(context, ImageViewActivity.class);
+                //intent.putExtra("ImageData", data);
+                //activity.startActivityForResult(intent, RESULTCODE);
             }
         });
     }
 
     @Override
     public int getItemCount() {
-        return iImages.size();
+        return posts.size();
     }
 
     protected void removeFromDataset(Integer data, int position){
-        iImages.remove(position);
+        posts.remove(position);
         notifyItemRemoved(position);
 
     }
