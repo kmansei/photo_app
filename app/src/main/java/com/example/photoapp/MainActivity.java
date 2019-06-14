@@ -12,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileDescriptor;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -61,8 +62,15 @@ public class MainActivity extends AppCompatActivity {
 
                 try {
                     Bitmap bmp = getBitmapFromUri(uri);
-                    Post post = new Post(bmp);
+
+                    //bitmap→byte配列(jpg)に変換
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                    byte[] imageData = baos.toByteArray();
+
+                    Post post = new Post(imageData);
                     posts.add(0, post);
+
                     mAdapter.notifyItemInserted(0);
                     recyclerView.smoothScrollToPosition(0);
                 } catch (IOException e) {
