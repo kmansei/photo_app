@@ -23,8 +23,8 @@ public class ImageViewActivity extends Activity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_image_view);
 
-        byte[] jpgArray = getIntent().getByteArrayExtra("ImageData");
-        Bitmap bmp = BitmapFactory.decodeByteArray(jpgArray, 0, jpgArray.length);
+        Post post = (Post)getIntent().getSerializableExtra("Post");
+        Bitmap bmp = BitmapFactory.decodeByteArray(post.imageData, 0, post.imageData.length);
 
         final ImageView imageView = findViewById(R.id.image_view);
         imageView.setImageBitmap(bmp);
