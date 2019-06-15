@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,20 +44,18 @@ public class timelineViewAdapter extends RecyclerView.Adapter<timelineViewAdapte
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        final Bitmap bmp = posts.get(position).bmp;
-        holder.imageView.setImageBitmap(bmp);
+        final byte[] imageData = posts.get(position).imageData;
 
+        //byte(jpeg)→Bitmapに変換
+        Bitmap bmp = BitmapFactory.decodeByteArray(imageData, 0, imageData.length);
+
+        holder.imageView.setImageBitmap(bmp);
         holder.imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //タッチしたpostインスタンスをimageViewActivityに渡す
                 Intent intent = new Intent(context, ImageViewActivity.class);
-
-                //bitmap→byte配列(jpg)に変換
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-                byte[] jpgarr = baos.toByteArray();
-
-                intent.putExtra("ImageData", jpgarr);
+                intent.putExtra("Post", posts.get(position));
                 activity.startActivityForResult(intent, RESULTCODE);
             }
         });
