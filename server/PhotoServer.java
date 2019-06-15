@@ -10,6 +10,7 @@ class PhotoServer {
     public static void main(String[] args) {
         try {
             ss = new ServerSocket(PORT);
+            System.out.println("waiting");
             while (true) {
                 s = ss.accept();
                 System.out.println("accept: " + s);

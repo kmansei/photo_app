@@ -82,12 +82,14 @@ public class MainActivity extends AppCompatActivity {
                     Log.d("onActivityResult", "aaaaaaaaaaaaa");
 
                     Intent intent = new Intent(Intent.ACTION_SYNC, null, this, Client.class);
-                    intent.putExtra("Post", post);
+                    //intent.putExtra("Post", post);
                     Log.d("onActivityResult", "move to client class");
                     startService(intent);
+                    Log.d("onActivityResult", "finish client");
 
                 } catch (IOException e) {
                     e.printStackTrace();
+                    Log.d("onActivityResult", "e");
                 }
             }
         }

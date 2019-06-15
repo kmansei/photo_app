@@ -26,7 +26,7 @@ public class Client extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent){
         Log.d("onHandleIntent", "moved in Client");
-        Post post = intent.getIntent().getSerializableExtra("Post");
+        //Post post = (Post)intent.getSerializableExtra("Post");
         updatePosts();
     }
 
@@ -37,7 +37,7 @@ public class Client extends IntentService {
 
         try {
             Log.d("updatePosts", "start tcp");
-            s = new Socket(InetAddress.getByName("localhost"), PORT);
+            s = new Socket(InetAddress.getByName("192.168.2.106"), PORT);
             oos = new ObjectOutputStream(s.getOutputStream());
 
             oos.writeInt(id);
@@ -58,7 +58,7 @@ public class Client extends IntentService {
             System.out.println("received: " + newPosts);
 
         } catch (Exception e) {
-            Log.d("updatePosts", "e");
+            Log.d("updatePosts", "["+e+"]");
         } /*finally {
             try {
                 if (oos != null) {

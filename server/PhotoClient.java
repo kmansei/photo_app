@@ -27,7 +27,9 @@ class PhotoClient {
 
     static void getPosts() {
         try {
-            s = new Socket(InetAddress.getByName("localhost"), 8080);
+            InetAddress addr = InetAddress.getByName("jinsakuma.local");
+            System.out.println(addr);
+            s = new Socket(addr, 8080);
             ois = new ObjectInputStream(s.getInputStream());
             posts = (ArrayList<Post>) ois.readObject();
             System.out.println("now received: " + posts);
