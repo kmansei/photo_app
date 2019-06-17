@@ -11,6 +11,11 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+
+import org.apache.commons.io.IOUtils;
 
 public class ImageViewActivity extends Activity {
     private float scale = 1f;
@@ -23,9 +28,19 @@ public class ImageViewActivity extends Activity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_image_view);
 
-        Post post = (Post)getIntent().getSerializableExtra("Post");
-        Bitmap bmp = BitmapFactory.decodeByteArray(post.imageData, 0, post.imageData.length);
+        //画像のバイト配列をキャッシュファイルから読み込む
+        byte[] jpgImage = null;
+        final File f = new File(getCacheDir(), "cache.jpg");
+        try (FileInputStream fis = new FileInputStream(f)){
+            jpgImage = IOUtils.toByteArray(fis);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
+        //Post post = (Post)getIntent().getSerializableExtra("Post");
+        Bitmap bmp = BitmapFactory.decodeByteArray(jpgImage, 0, jpgImage.length);
+
+        //mbpをセットして表示
         final ImageView imageView = findViewById(R.id.image_view);
         imageView.setImageBitmap(bmp);
 
@@ -60,7 +75,4 @@ public class ImageViewActivity extends Activity {
         detector.onTouchEvent(event);
         return super.onTouchEvent(event);
     }
-
-
-
 }
