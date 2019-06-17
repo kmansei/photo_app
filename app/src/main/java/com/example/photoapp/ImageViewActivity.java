@@ -1,23 +1,24 @@
 package com.example.photoapp;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
-import android.view.View;
 import android.view.Window;
-import android.widget.Button;
 import android.widget.ImageView;
+import android.support.v7.app.AppCompatActivity;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
 import org.apache.commons.io.IOUtils;
 
-public class ImageViewActivity extends Activity {
+public class ImageViewActivity extends AppCompatActivity {
     private float scale = 1f;
     private ScaleGestureDetector detector;
 
@@ -28,6 +29,15 @@ public class ImageViewActivity extends Activity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_image_view);
 
+        Toolbar toolbar = findViewById(R.id.tool_bar);
+        setSupportActionBar(toolbar);
+
+        //戻るボタンを表示
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+
         //画像のバイト配列をキャッシュファイルから読み込む
         byte[] jpgImage = null;
         final File f = new File(getCacheDir(), "cache.jpg");
@@ -37,7 +47,6 @@ public class ImageViewActivity extends Activity {
             e.printStackTrace();
         }
 
-        //Post post = (Post)getIntent().getSerializableExtra("Post");
         Bitmap bmp = BitmapFactory.decodeByteArray(jpgImage, 0, jpgImage.length);
 
         //mbpをセットして表示
@@ -56,23 +65,32 @@ public class ImageViewActivity extends Activity {
         }
 
         detector = new ScaleGestureDetector(this,new ScaleListener());
-
-        Button button = findViewById(R.id.exitButton);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // EXITボタンをタップするともとの画面に戻る
-                Intent intent = new Intent();
-                setResult(RESULT_OK, intent);
-                finish();
-            }
-        });
-
     }
 
     public boolean onTouchEvent(MotionEvent event) {
         //re-route the Touch Events to the ScaleListener class
         detector.onTouchEvent(event);
         return super.onTouchEvent(event);
+    }
+
+    //ツールバーの各種アイコンが押されたときに呼ばれる(今は戻るボタンだけ)
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        boolean result = true;
+
+        switch (id) {
+            case android.R.id.home:
+                // 矢印ボタンを押すともとの画面に戻る
+                Intent intent = new Intent();
+                setResult(RESULT_OK, intent);
+                finish();
+                break;
+            default:
+                result = super.onOptionsItemSelected(item);
+        }
+
+        return result;
     }
 }
