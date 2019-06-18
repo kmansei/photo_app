@@ -1,23 +1,13 @@
 package com.example.photoapp;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.ParcelFileDescriptor;
 import android.util.Log;
-
-import java.io.ByteArrayOutputStream;
-import java.io.FileDescriptor;
-import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
-
-import static android.net.Uri.parse;
 
 public class Client extends AsyncTask<Void, String, List<byte[]>> {
     private CallBackTask callbacktask;
@@ -38,27 +28,7 @@ public class Client extends AsyncTask<Void, String, List<byte[]>> {
     @Override
     protected List<byte[]> doInBackground(Void... param){
         List<byte[]> newImages = new ArrayList<byte[]>();
-        //Log.d("onHandleIntent", "moved in Client");
-        //Uri uri = parse(uriString[0]);
-        //Log.d("onHandleIntent", "["+uri+"]");
-        //try{
-            //Bitmap bmp = getBitmapFromUri(uri);
-
-            //bitmap→byte配列(jpg)に変換
-//            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//            bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-//            byte[] imageData = baos.toByteArray();
         newImages = updatePosts(imageData);
-//            for (int i=0; i<newImages.size(); i++){
-//                Post post = new Post(newImages.get(i));
-//                posts.add(post);
-//                Log.d("onActivityResult", "add new post");
-//            }
-
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            Log.d("onActivityResult", "e");
-//        }
         return newImages;
     }
 
