@@ -16,11 +16,6 @@ import android.widget.Button;
 import java.io.ByteArrayOutputStream;
 import java.io.FileDescriptor;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
-import java.net.InetAddress;
-import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -79,10 +74,8 @@ public class MainActivity extends AppCompatActivity {
                     mAdapter.notifyItemInserted(0);
                     recyclerView.smoothScrollToPosition(0);
 
-                    Log.d("onActivityResult", "aaaaaaaaaaaaa");
-
                     Intent intent = new Intent(Intent.ACTION_SYNC, null, this, Client.class);
-                    //intent.putExtra("Post", post);
+                    intent.putExtra("URI", uri.toString());
                     Log.d("onActivityResult", "move to client class");
                     startService(intent);
                     Log.d("onActivityResult", "finish client");
