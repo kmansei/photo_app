@@ -67,9 +67,9 @@ public class MainActivity extends AppCompatActivity {
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
                     bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
                     byte[] imageData = baos.toByteArray();
-
+                    int id = posts.size();
                     // タスクの生成
-                    Client client = new Client(imageData);
+                    Client client = new Client(id, imageData);
                     client.setOnCallBack(new Client.CallBackTask(){
                         @Override
                         public void CallBack(List<byte[]> result) {

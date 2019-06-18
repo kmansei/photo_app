@@ -5,6 +5,7 @@ import java.awt.*;
 import java.awt.image.*;
 import javax.imageio.*;
 import java.util.List;
+import java.io.File;
 
 class PhotoServer {
     static final int PORT = 8080;
@@ -62,7 +63,7 @@ class ServerThread extends Thread {
             //ois.close();
             
             //画像の保存
-            img_path = saveImage(id, img);
+            img_path = saveImage(img);
 
             DatabaseConnection databaseConnection = new DatabaseConnection();
             
@@ -112,11 +113,16 @@ class ServerThread extends Thread {
             }
         }
     }
-    String saveImage(int id, byte[] img) {
+    String saveImage(byte[] img) {
         try{
+            //Fileクラスのオブジェクトを生成する
+            File imgDir = new File(dir);
+            //listFilesメソッドを使用して一覧を取得する
+            File[] fileList = imgDir.listFiles();
+            int fileId = fileList.length;
             BufferedImage image = ImageIO.read(new ByteArrayInputStream(img));
             System.out.println("saving image");
-            String out_path = dir + String.valueOf(id+1) + ".png";
+            String out_path = dir + String.valueOf(fileId) + ".png";
             FileOutputStream out = new FileOutputStream(out_path);
             ImageIO.write( image, "png", out);
             System.out.println("image saved");

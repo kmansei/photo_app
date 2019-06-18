@@ -12,23 +12,23 @@ import java.util.List;
 public class Client extends AsyncTask<Void, String, List<byte[]>> {
     private CallBackTask callbacktask;
     private byte[] imageData;
-    static final int PORT = 8080;
+    private int id;
 
+    static final int PORT = 8080;
     static Socket s;
     static ObjectInputStream ois;
     static ObjectOutputStream oos;
 
-    static List<Post> posts = new ArrayList<Post>();
-    //private String uriString;
-    public Client(byte[] images) {
+    public Client(int currentId, byte[] images) {
         super();
+        id = currentId;
         imageData = images;
     }
 
     @Override
     protected List<byte[]> doInBackground(Void... param){
         List<byte[]> newImages = new ArrayList<byte[]>();
-        newImages = updatePosts(imageData);
+        newImages = updatePosts(id, imageData);
         return newImages;
     }
 
@@ -47,9 +47,9 @@ public class Client extends AsyncTask<Void, String, List<byte[]>> {
         }
     }
 
-    static List<byte[]> updatePosts(byte[] image) {
+    static List<byte[]> updatePosts(int id, byte[] image) {
 
-        int id = 3;
+        //int id = 3;
         List<byte[]> newImages = new ArrayList<byte[]>();
 
         try {
