@@ -68,17 +68,35 @@ public class MainActivity extends AppCompatActivity {
                     bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
                     byte[] imageData = baos.toByteArray();
 
-                    Post post = new Post(imageData);
-                    posts.add(0, post);
+//                    Post post = new Post(imageData);
+//                    posts.add(0, post);
 
-                    mAdapter.notifyItemInserted(0);
-                    recyclerView.smoothScrollToPosition(0);
+//                    mAdapter.notifyItemInserted(0);
+//                    recyclerView.smoothScrollToPosition(0);
 
-                    Intent intent = new Intent(Intent.ACTION_SYNC, null, this, Client.class);
-                    intent.putExtra("URI", uri.toString());
-                    Log.d("onActivityResult", "move to client class");
-                    startService(intent);
-                    Log.d("onActivityResult", "finish client");
+//                    Intent intent = new Intent(Intent.ACTION_SYNC, null, this, Client.class);
+//                    intent.putExtra("URI", uri.toString());
+//                    Log.d("onActivityResult", "move to client class");
+//                    startService(intent);
+//                    Log.d("onActivityResult", "finish client");
+                    // タスクの生成
+                    Client client = new Client(imageData);
+                    client.setOnCallBack(new Client.CallBackTask(){
+                        @Override
+                        public void CallBack(List<byte[]> result) {
+                            super.CallBack(result);
+                            //処理
+                            for (int i=0; i<result.size(); i++){
+                                Post post = new Post(result.get(i));
+                                posts.add(0, post);
+                                mAdapter.notifyItemInserted(0);
+                                recyclerView.smoothScrollToPosition(0);
+                                Log.d("CallBack", "add new post");
+                            }
+                        }
+                    });
+
+                    client.execute();
 
                 } catch (IOException e) {
                     e.printStackTrace();

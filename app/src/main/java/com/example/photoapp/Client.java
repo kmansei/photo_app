@@ -1,10 +1,9 @@
 package com.example.photoapp;
 
-import android.app.IntentService;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.ParcelFileDescriptor;
 import android.util.Log;
 
@@ -20,7 +19,9 @@ import java.util.List;
 
 import static android.net.Uri.parse;
 
-public class Client extends IntentService {
+public class Client extends AsyncTask<Void, String, List<byte[]>> {
+    private CallBackTask callbacktask;
+    private byte[] imageData;
     static final int PORT = 8080;
 
     static Socket s;
@@ -28,45 +29,52 @@ public class Client extends IntentService {
     static ObjectOutputStream oos;
 
     static List<Post> posts = new ArrayList<Post>();
-
-    public Client(){
-        super("IntentService");
+    //private String uriString;
+    public Client(byte[] images) {
+        super();
+        imageData = images;
     }
 
     @Override
-    protected void onHandleIntent(Intent intent){
+    protected List<byte[]> doInBackground(Void... param){
         List<byte[]> newImages = new ArrayList<byte[]>();
-        Log.d("onHandleIntent", "moved in Client");
-        Uri uri = parse(intent.getStringExtra("URI"));
-        Log.d("onHandleIntent", "["+uri+"]");
-        try{
-            Bitmap bmp = getBitmapFromUri(uri);
+        //Log.d("onHandleIntent", "moved in Client");
+        //Uri uri = parse(uriString[0]);
+        //Log.d("onHandleIntent", "["+uri+"]");
+        //try{
+            //Bitmap bmp = getBitmapFromUri(uri);
 
             //bitmap→byte配列(jpg)に変換
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-            byte[] imageData = baos.toByteArray();
-            newImages = updatePosts(imageData);
-            for (int i=0; i<newImages.size(); i++){
-                Post post = new Post(newImages.get(i));
-                posts.add(post);
-                Log.d("onActivityResult", "add new post");
-            }
+//            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//            bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+//            byte[] imageData = baos.toByteArray();
+        newImages = updatePosts(imageData);
+//            for (int i=0; i<newImages.size(); i++){
+//                Post post = new Post(newImages.get(i));
+//                posts.add(post);
+//                Log.d("onActivityResult", "add new post");
+//            }
 
-        } catch (IOException e) {
-            e.printStackTrace();
-            Log.d("onActivityResult", "e");
-        }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            Log.d("onActivityResult", "e");
+//        }
+        return newImages;
     }
 
-    //画像のbitmap取得
-    private Bitmap getBitmapFromUri(Uri uri) throws IOException {
-        ParcelFileDescriptor parcelFileDescriptor =
-                getContentResolver().openFileDescriptor(uri, "r");
-        FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
-        Bitmap image = BitmapFactory.decodeFileDescriptor(fileDescriptor);
-        parcelFileDescriptor.close();
-        return image;
+    @Override
+    protected void onPostExecute(List<byte[]> result) {
+        super.onPostExecute(result);
+        callbacktask.CallBack(result);
+    }
+
+    public void setOnCallBack(CallBackTask _cbj) {
+        callbacktask = _cbj;
+    }
+
+    public static class CallBackTask {
+        public void CallBack(List<byte[]> result) {
+        }
     }
 
     static List<byte[]> updatePosts(byte[] image) {
