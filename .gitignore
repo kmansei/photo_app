@@ -1,5 +1,6 @@
 .gradle/
 local.properties
+./server/images/*
 
 # IntelliJ IDEA project files
 .idea/
