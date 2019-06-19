@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -23,7 +24,6 @@ public class MainActivity extends AppCompatActivity {
     private static final int RESULT_PICK_IMAGEFILE = 1000;
 
     List<Post> posts = new ArrayList<Post>();
-
     RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
     final RecyclerView.Adapter mAdapter = new timelineViewAdapter(this, posts);
     RecyclerView recyclerView;
@@ -67,14 +67,29 @@ public class MainActivity extends AppCompatActivity {
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
                     bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
                     byte[] imageData = baos.toByteArray();
+                    int id = posts.size();
+                    // タスクの生成
+                    Client client = new Client(id, imageData);
+                    client.setOnCallBack(new Client.CallBackTask(){
+                        @Override
+                        public void CallBack(List<byte[]> result) {
+                            super.CallBack(result);
+                            //処理
+                            for (int i=0; i<result.size(); i++){
+                                Post post = new Post(result.get(i));
+                                posts.add(0, post);
+                                mAdapter.notifyItemInserted(0);
+                                recyclerView.smoothScrollToPosition(0);
+                                Log.d("CallBack", "add new post");
+                            }
+                        }
+                    });
 
-                    Post post = new Post(imageData);
-                    posts.add(0, post);
+                    client.execute();
 
-                    mAdapter.notifyItemInserted(0);
-                    recyclerView.smoothScrollToPosition(0);
                 } catch (IOException e) {
                     e.printStackTrace();
+                    Log.d("onActivityResult", "e");
                 }
             }
         }

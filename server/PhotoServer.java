@@ -1,15 +1,21 @@
 import java.io.*;
 import java.net.*;
 import java.util.*;
+import java.awt.*;
+import java.awt.image.*;
+import javax.imageio.*;
+import java.util.List;
+import java.io.File;
 
 class PhotoServer {
     static final int PORT = 8080;
     static Socket s = null;
     static ServerSocket ss = null;
-    
+
     public static void main(String[] args) {
         try {
             ss = new ServerSocket(PORT);
+            System.out.println("waiting");
             while (true) {
                 s = ss.accept();
                 System.out.println("accept: " + s);
@@ -20,7 +26,7 @@ class PhotoServer {
             try {
                 if (ss != null) ss.close();
                 if (s != null) s.close();
-            } catch (IOException ioe) {    
+            } catch (IOException ioe) {
             }
         }
     }
@@ -30,64 +36,70 @@ class ServerThread extends Thread {
     Socket s;
     ObjectInputStream ois;
     ObjectOutputStream oos;
-    ArrayList<Post> posts;
+    String dir = "./images/";
+    List<String> paths;
+    DatabaseConnection databaseConnection;
 
     ServerThread(Socket s) {
         this.s = s;
-        posts = new ArrayList<Post>();
+        databaseConnection = new DatabaseConnection();
     }
 
     public void run() {
         System.out.println("\trun: " + Thread.currentThread());
         try {
-            //ois = new ObjectInputStream(s.getInputStream());
-            oos = new ObjectOutputStream(s.getOutputStream());
-            System.out.println("init ois and oos");
-
-            getPostsDB(); // not implemented
-            posts.add(new Post(null));
-            posts.add(new Post(null));
-            posts.add(new Post(null));
-            posts.add(new Post(null));
-            posts.add(new Post(null));
-            posts.add(new Post(null));
-            posts.add(new Post(null));
-            posts.add(new Post(null));
-            posts.add(new Post(null));
-            posts.add(new Post(null));
-            int databaseID = 10;
-
-            System.out.println(posts);
-
-            oos.writeObject(posts);
-            oos.flush();
-            System.out.println("send \"posts\" to client: " + s);
-            
-            //oos.close();
-            ois = new ObjectInputStream(s.getInputStream());
-
             int id;
-            Post p;
+            byte[] img;
+            String img_path = null;
+            BufferedImage img_new = null;
+            List<byte[]> imgList = new ArrayList<byte[]>();
 
+            ois = new ObjectInputStream(s.getInputStream());
+            //id取得
             id = ois.readInt();
             System.out.println("receive id: " + id);
+            //画像のbyte配列取得
+            img = (byte[]) ois.readObject();
+            System.out.println("receive post");
+            //ois.close();
 
-            p = (Post) ois.readObject();
-            System.out.println("receive post: " + p);
+            //画像の保存
+            img_path = saveImage(img);
 
-            posts.add(p);
-            databaseID++;
+            paths = databaseConnection.Connect(id, img_path);
+            for (int i=0; i<paths.size(); i++){
+                //System.out.println(paths.get(i));
+                img_new = ImageIO.read(new File(paths.get(i)));
+                try{
+                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                    BufferedOutputStream os = new BufferedOutputStream( bos );
+                    img_new.flush();
+                    ImageIO.write( img_new, "png", os ); //. png 型
+                    byte[] byteimg = bos.toByteArray();
+                    imgList.add(byteimg);
+                }catch( Exception e ){}
+            }
+
+            // posts.add(p);
+            //databaseID++;
 
             //ois.close();
 
             // this is database zone
 
             oos = new ObjectOutputStream(s.getOutputStream());
+            oos.writeObject(imgList);
+            oos.flush();
+            System.out.println("send images to client: " + s);
+            // System.out.println("send sublist");
 
-            ArrayList<Post> newPosts = new ArrayList<Post>(posts.subList(id + 1, databaseID));
+            // //ois = new ObjectInputStream(s.getInputStream());
+            // oos = new ObjectOutputStream(s.getOutputStream());
+            // System.out.println("init ois and oos");
 
-            oos.writeObject(newPosts);
-            System.out.println("send sublist");
+            // oos.writeObject(posts);
+            // oos.flush();
+            // System.out.println("send \"posts\" to client: " + s);
 
         } catch (Exception e) {
             System.out.println(e);
@@ -100,7 +112,19 @@ class ServerThread extends Thread {
             }
         }
     }
-    void getPostsDB() {
-        System.out.println("get the tiimeline from the databese :D");
+    String saveImage(byte[] img) {
+        try{
+            BufferedImage image = ImageIO.read(new ByteArrayInputStream(img));
+            System.out.println("saving image");
+            //データベースの最新のID+1を取得
+            int latestID = databaseConnection.GetLatestId();
+            String out_path = dir + String.valueOf(latestID) + ".png";
+            FileOutputStream out = new FileOutputStream(out_path);
+            ImageIO.write( image, "png", out);
+            System.out.println("image saved");
+            return out_path;
+        }catch( Exception e ){}
+        return "error";
     }
+
 }
