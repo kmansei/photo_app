@@ -5,9 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DatabaseConnection {
-    String databasePath = "jdbc:mysql://localhost/photo_app";
+    // String databasePath = "jdbc:mysql://localhost/photo_app";
+    String databasePath = "jdbc:mysql://localhost:3306/photo_app";
     String user = "root";
-    String password = "";
+    String password = "Jinskm_1213";
 
     public List<String> Connect(int id, String path){
         Connection con = null;
