@@ -122,7 +122,7 @@ class ServerThread extends Thread {
             int fileId = fileList.length;
             BufferedImage image = ImageIO.read(new ByteArrayInputStream(img));
             System.out.println("saving image");
-            String out_path = dir + String.valueOf(fileId) + ".png";
+            String out_path = dir + String.valueOf(fileId+1) + ".png";
             FileOutputStream out = new FileOutputStream(out_path);
             ImageIO.write( image, "png", out);
             System.out.println("image saved");
