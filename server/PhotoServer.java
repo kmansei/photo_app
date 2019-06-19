@@ -11,7 +11,7 @@ class PhotoServer {
     static final int PORT = 8080;
     static Socket s = null;
     static ServerSocket ss = null;
-    
+
     public static void main(String[] args) {
         try {
             ss = new ServerSocket(PORT);
@@ -26,7 +26,7 @@ class PhotoServer {
             try {
                 if (ss != null) ss.close();
                 if (s != null) s.close();
-            } catch (IOException ioe) {    
+            } catch (IOException ioe) {
             }
         }
     }
@@ -38,10 +38,11 @@ class ServerThread extends Thread {
     ObjectOutputStream oos;
     String dir = "./images/";
     List<String> paths;
+    DatabaseConnection databaseConnection;
 
     ServerThread(Socket s) {
         this.s = s;
-        //posts = new ArrayList<Post>();
+        databaseConnection = new DatabaseConnection();
     }
 
     public void run() {
@@ -52,7 +53,7 @@ class ServerThread extends Thread {
             String img_path = null;
             BufferedImage img_new = null;
             List<byte[]> imgList = new ArrayList<byte[]>();
-            
+
             ois = new ObjectInputStream(s.getInputStream());
             //id取得
             id = ois.readInt();
@@ -61,12 +62,10 @@ class ServerThread extends Thread {
             img = (byte[]) ois.readObject();
             System.out.println("receive post");
             //ois.close();
-            
+
             //画像の保存
             img_path = saveImage(img);
 
-            DatabaseConnection databaseConnection = new DatabaseConnection();
-            
             paths = databaseConnection.Connect(id, img_path);
             for (int i=0; i<paths.size(); i++){
                 //System.out.println(paths.get(i));
@@ -122,13 +121,17 @@ class ServerThread extends Thread {
             int fileId = fileList.length;
             BufferedImage image = ImageIO.read(new ByteArrayInputStream(img));
             System.out.println("saving image");
-            String out_path = dir + String.valueOf(fileId) + ".png";
+
+            //データベースの最新のID+1を取得
+            int latestID = databaseConnection.GetLatestId();
+            String out_path = dir + String.valueOf(latestID) + ".png";
+
             FileOutputStream out = new FileOutputStream(out_path);
             ImageIO.write( image, "png", out);
             System.out.println("image saved");
             return out_path;
         }catch( Exception e ){}
-            return "error";
+        return "error";
     }
 
 }
