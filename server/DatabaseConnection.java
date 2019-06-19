@@ -5,10 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DatabaseConnection {
-    public DatabaseConnection() {
-        //this.id = id;
-        //this.bytes = bytes;
-    }
+    String databasePath = "jdbc:mysql://localhost/photo_app";
+    String user = "root";
+    String password = "";
 
     public List<String> Connect(int id, String path){
         Connection con = null;
@@ -19,17 +18,12 @@ public class DatabaseConnection {
             // JDBCドライバのロード - JDBC4.0（JDK1.6）以降は不要
             Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
             // MySQLに接続
-            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/photo_app", "root", "Jinskm_1213");
+            con = DriverManager.getConnection(databasePath, user, password);
             System.out.println("MySQLに接続できました。");
 
-            //最大idの取得
-            sql = "SELECT MAX(id) FROM photos;";
-            statement = con.prepareStatement(sql);
-            ResultSet result = statement.executeQuery();
-            result.next();
-            int nextID = Integer.parseInt(result.getString(1)) + 1;
+            int nextID = GetLatestId();
             System.out.println(nextID);
-            
+
             //画像URLの格納
             sql = "INSERT INTO photos VALUES (?, ?);";
             statement = con.prepareStatement(sql);
@@ -44,7 +38,7 @@ public class DatabaseConnection {
             statement.setInt(1, id);
             ResultSet result3 = statement.executeQuery();
             System.out.println("画像pathの取得");
-            
+
             for (int i=0; i<(nextID - id); i++){
                 result3.next();
                 path = result3.getString(2);
@@ -68,5 +62,15 @@ public class DatabaseConnection {
             }
         }
         return paths;
+    }
+
+    //最新のidを取得
+    public int GetLatestId() throws SQLException {
+        Connection con = DriverManager.getConnection(databasePath, user, password);
+        String sql = "SELECT MAX(id) FROM photos;";
+        PreparedStatement statement = con.prepareStatement(sql);
+        ResultSet result = statement.executeQuery();
+        result.next();
+        return Integer.parseInt(result.getString(1)) + 1;
     }
 }
