@@ -6,12 +6,15 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-
-import java.io.ByteArrayOutputStream;
+import com.bumptech.glide.Glide;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.List;
 
 public class timelineViewAdapter extends RecyclerView.Adapter<timelineViewAdapter.ViewHolder> {
@@ -49,13 +52,25 @@ public class timelineViewAdapter extends RecyclerView.Adapter<timelineViewAdapte
         //byte(jpeg)→Bitmapに変換
         Bitmap bmp = BitmapFactory.decodeByteArray(imageData, 0, imageData.length);
 
-        holder.imageView.setImageBitmap(bmp);
+        //RecycleビューにBitmapをセット
+        Glide.with(context).load(bmp).into(holder.imageView);
+
+
         holder.imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                //画像のバイト配列をキャッシュファイルに保存
+                File f = new File(context.getCacheDir(), "cache.jpg");
+                try (FileOutputStream fos = new FileOutputStream(f)){
+                    fos.write(posts.get(holder.getAdapterPosition()).imageData);
+                } catch (IOException e){
+                    e.printStackTrace();
+                }
+
                 //タッチしたpostインスタンスをimageViewActivityに渡す
                 Intent intent = new Intent(context, ImageViewActivity.class);
-                intent.putExtra("Post", posts.get(position));
+                //intent.putExtra("Post", posts.get(position));
                 activity.startActivityForResult(intent, RESULTCODE);
             }
         });
