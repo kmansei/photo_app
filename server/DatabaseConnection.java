@@ -25,13 +25,18 @@ public class DatabaseConnection {
             int nextID = GetLatestId();
             System.out.println(nextID);
 
-            //画像URLの格納
-            sql = "INSERT INTO photos VALUES (?, ?);";
-            statement = con.prepareStatement(sql);
-            statement.setInt(1, nextID);
-            statement.setString(2, path);
-            int result2= statement.executeUpdate();
-            System.out.println("結果１：" + result2);
+            if(path != null){
+                //画像URLの格納
+                sql = "INSERT INTO photos VALUES (?, ?);";
+                statement = con.prepareStatement(sql);
+                statement.setInt(1, nextID);
+                statement.setString(2, path);
+                int result2= statement.executeUpdate();
+                System.out.println("結果１：" + result2);
+            }else{
+                System.out.println("Only update");
+                nextID--;
+            }
 
             //Client側の未更新データを取得
             sql = "SELECT * FROM photos WHERE id > ?;";

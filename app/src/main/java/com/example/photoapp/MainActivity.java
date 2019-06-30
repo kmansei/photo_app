@@ -9,11 +9,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.FileDescriptor;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -32,6 +34,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Toolbar toolbar = findViewById(R.id.tool_bar);
+        toolbar.setTitle("Photo app");
+
+        setSupportActionBar(toolbar);
 
         Button button = findViewById(R.id.postButton);
 
@@ -94,6 +101,42 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int itemId = item.getItemId();
+        switch (itemId) {
+            case R.id.updateButton:
+                int id = posts.size();
+                // タスクの生成
+                Client client = new Client(id, null);
+                client.setOnCallBack(new Client.CallBackTask(){
+                    @Override
+                    public void CallBack(List<byte[]> result) {
+                        super.CallBack(result);
+                        //処理
+                        for (int i=0; i<result.size(); i++){
+                            Post post = new Post(result.get(i));
+                            posts.add(0, post);
+                            mAdapter.notifyItemInserted(0);
+                            recyclerView.smoothScrollToPosition(0);
+                            Log.d("CallBack", "add new post");
+                        }
+                    }
+                });
+
+                client.execute();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     //画像のbitmap取得
     private Bitmap getBitmapFromUri(Uri uri) throws IOException {
         ParcelFileDescriptor parcelFileDescriptor =
@@ -103,4 +146,5 @@ public class MainActivity extends AppCompatActivity {
         parcelFileDescriptor.close();
         return image;
     }
+
 }

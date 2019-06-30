@@ -62,9 +62,11 @@ class ServerThread extends Thread {
             img = (byte[]) ois.readObject();
             System.out.println("receive post");
             //ois.close();
-
+            
+            if(img != null){
             //画像の保存
             img_path = saveImage(img);
+            }
 
             paths = databaseConnection.Connect(id, img_path);
             for (int i=0; i<paths.size(); i++){
