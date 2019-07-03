@@ -120,7 +120,7 @@ class ServerThread extends Thread {
             System.out.println("saving image");
             //データベースの最新のID+1を取得
             int latestID = databaseConnection.GetLatestId();
-            String out_path = dir + String.valueOf(latestID) + ".png";
+            String out_path = dir + String.valueOf(latestID) + ".jpg";
             FileOutputStream out = new FileOutputStream(out_path);
             ImageIO.write( image, "png", out);
             System.out.println("image saved");
