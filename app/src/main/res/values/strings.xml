@@ -6,4 +6,6 @@
     <string name="title_activity_image_view">ImageViewActivity</string>
     <string name="user">user</string>
     <string name="usericon">userIcon</string>
+    <string name="user_name_jp">ユーザー名</string>
+    <string name="ip_jp">サーバーIP</string>
 </resources>
