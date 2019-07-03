@@ -11,6 +11,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
+
 import com.bumptech.glide.Glide;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -26,10 +28,14 @@ public class timelineViewAdapter extends RecyclerView.Adapter<timelineViewAdapte
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView;
+        ImageView userIcon;
+        TextView userName;
 
         public ViewHolder(View v) {
             super(v);
             imageView = v.findViewById(R.id.image_view);
+            userIcon = v.findViewById(R.id.user_icon);
+            userName = v.findViewById(R.id.user_name);
         }
     }
 
@@ -54,6 +60,7 @@ public class timelineViewAdapter extends RecyclerView.Adapter<timelineViewAdapte
 
         //RecycleビューにBitmapをセット
         Glide.with(context).load(bmp).into(holder.imageView);
+        Glide.with(context).load(R.drawable.user).circleCrop().into(holder.userIcon);
 
 
         holder.imageView.setOnClickListener(new View.OnClickListener() {

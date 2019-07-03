@@ -55,8 +55,8 @@ public class Client extends AsyncTask<Void, String, List<byte[]>> {
         try {
             Log.d("updatePosts", "start tcp");
             //s = new Socket(InetAddress.getByName("192.168.2.106"), PORT);
-            //s = new Socket(InetAddress.getByName("10.9.87.53"), PORT);
-            s = new Socket(InetAddress.getByName("10.9.93.38"), PORT);
+            s = new Socket(InetAddress.getByName("10.9.87.53"), PORT);
+            //s = new Socket(InetAddress.getByName("10.9.93.38"), PORT);
             oos = new ObjectOutputStream(s.getOutputStream());
 
             oos.writeInt(id);
