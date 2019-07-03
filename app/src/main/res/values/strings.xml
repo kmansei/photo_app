@@ -4,4 +4,6 @@
     <string name="exit">EXIT</string>
     <string name="image_view">image_view</string>
     <string name="title_activity_image_view">ImageViewActivity</string>
+    <string name="user">user</string>
+    <string name="usericon">userIcon</string>
 </resources>
