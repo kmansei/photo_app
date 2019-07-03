@@ -62,9 +62,11 @@ class ServerThread extends Thread {
             img = (byte[]) ois.readObject();
             System.out.println("receive post");
             //ois.close();
-
+            
+            if(img != null){
             //画像の保存
             img_path = saveImage(img);
+            }
 
             paths = databaseConnection.Connect(id, img_path);
             for (int i=0; i<paths.size(); i++){
@@ -74,7 +76,7 @@ class ServerThread extends Thread {
                     ByteArrayOutputStream bos = new ByteArrayOutputStream();
                     BufferedOutputStream os = new BufferedOutputStream( bos );
                     img_new.flush();
-                    ImageIO.write( img_new, "png", os ); //. png 型
+                    ImageIO.write( img_new, "jpg", os ); //. jpg 型
                     byte[] byteimg = bos.toByteArray();
                     imgList.add(byteimg);
                 }catch( Exception e ){}
