@@ -76,7 +76,7 @@ class ServerThread extends Thread {
                     ByteArrayOutputStream bos = new ByteArrayOutputStream();
                     BufferedOutputStream os = new BufferedOutputStream( bos );
                     img_new.flush();
-                    ImageIO.write( img_new, "png", os ); //. png 型
+                    ImageIO.write( img_new, "jpg", os ); //. jpg 型
                     byte[] byteimg = bos.toByteArray();
                     imgList.add(byteimg);
                 }catch( Exception e ){}
