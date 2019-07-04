@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.widget.EditText;
 
 public class AccountActivity extends AppCompatActivity {
 
@@ -28,8 +29,8 @@ public class AccountActivity extends AppCompatActivity {
         //アイコンの色を白くする
         toolbar.getNavigationIcon().setColorFilter(getResources().getColor(R.color.white), PorterDuff.Mode.SRC_ATOP);
 
-        //アカウントをアクティブ
-        BottomNavigationView navigation = findViewById(R.id.bottomNavigationView);
+        EditText ip = findViewById(R.id.ipEdit);
+        ip.setText(Client.ip);
     }
 
     @Override

@@ -19,6 +19,9 @@ public class Client extends AsyncTask<Void, String, List<byte[]>> {
     static ObjectInputStream ois;
     static ObjectOutputStream oos;
 
+    //接続先IP
+    public static String ip = "192.168.0.8";
+
     public Client(int currentId, byte[] images) {
         super();
         id = currentId;
@@ -54,9 +57,7 @@ public class Client extends AsyncTask<Void, String, List<byte[]>> {
 
         try {
             Log.d("updatePosts", "start tcp");
-            //s = new Socket(InetAddress.getByName("192.168.2.106"), PORT);
-            s = new Socket(InetAddress.getByName("10.9.87.53"), PORT);
-            //s = new Socket(InetAddress.getByName("10.9.93.38"), PORT);
+            s = new Socket(InetAddress.getByName(ip), PORT);
             oos = new ObjectOutputStream(s.getOutputStream());
 
             oos.writeInt(id);
