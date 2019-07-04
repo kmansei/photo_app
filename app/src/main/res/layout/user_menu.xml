@@ -24,38 +24,41 @@
 
     <TextView
         android:id="@+id/user_name"
-        android:layout_width="177dp"
-        android:layout_height="56dp"
-        android:layout_marginBottom="280dp"
+        android:layout_width="120dp"
+        android:layout_height="51dp"
+        android:layout_marginEnd="8dp"
         android:text="@string/user_name_jp"
         android:textSize="24sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.115"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintEnd_toStartOf="@+id/editText"
+        app:layout_constraintHorizontal_bias="0.585"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:layout_editor_absoluteY="335dp" />
 
     <EditText
         android:id="@+id/editText"
         android:layout_width="214dp"
         android:layout_height="60dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="12dp"
         android:layout_marginEnd="28dp"
         android:ems="10"
+        android:importantForAutofill="no"
         android:inputType="textPersonName"
         android:text="@string/user"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/user_icon"
-        android:importantForAutofill="no" />
+        app:layout_constraintTop_toBottomOf="@+id/user_icon" />
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="8dp"
         android:text="@string/ip_jp"
         android:textSize="24sp"
+        app:layout_constraintEnd_toStartOf="@+id/editText2"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/user_name" />
 
@@ -63,7 +66,7 @@
         android:id="@+id/editText2"
         android:layout_width="214dp"
         android:layout_height="60dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="28dp"
         android:ems="10"
         android:importantForAutofill="no"
