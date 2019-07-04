@@ -8,4 +8,5 @@
     <string name="usericon">userIcon</string>
     <string name="user_name_jp">ユーザー名</string>
     <string name="ip_jp">サーバーIP</string>
+    <string name="update">更新</string>
 </resources>

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
 import android.support.v7.app.AppCompatActivity;
@@ -110,11 +111,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(final MenuItem item) {
 
         int itemId = item.getItemId();
         switch (itemId) {
             case R.id.updateButton:
+                //ボタンを押せなくする
+                item.setEnabled(false);
+                item.setIcon(R.drawable.sync_disabled);
+
                 int id = posts.size();
                 // タスクの生成
                 Client client = new Client(id, null);
@@ -130,6 +135,9 @@ public class MainActivity extends AppCompatActivity {
                             recyclerView.smoothScrollToPosition(0);
                             Log.d("CallBack", "add new post");
                         }
+                        //ボタンを押せるようにする
+                        item.setEnabled(true);
+                        item.setIcon(R.drawable.sync);
                     }
                 });
 
