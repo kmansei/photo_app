@@ -34,12 +34,15 @@
 
     <TextView
         android:id="@+id/user_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="48dp"
-        android:layout_marginTop="344dp"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="332dp"
+        android:layout_marginEnd="8dp"
         android:text="@string/user_name_jp"
         android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@+id/userEdit"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -47,10 +50,8 @@
         android:id="@+id/userEdit"
         android:layout_width="214dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="335dp"
-        android:layout_marginEnd="28dp"
-        android:digits="20"
-        android:ems="10"
+        android:layout_marginTop="332dp"
+        android:layout_marginEnd="16dp"
         android:hint="@string/user"
         android:importantForAutofill="no"
         android:inputType="textPersonName"
@@ -62,12 +63,15 @@
 
     <TextView
         android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="48dp"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="24dp"
         android:layout_marginTop="20dp"
+        android:layout_marginEnd="8dp"
         android:text="@string/ip_jp"
         android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@+id/ipEdit"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/user_name" />
 
@@ -75,8 +79,8 @@
         android:id="@+id/ipEdit"
         android:layout_width="214dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="28dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="16dp"
         android:ems="10"
         android:importantForAutofill="no"
         android:inputType="textPersonName"
