@@ -54,6 +54,7 @@ public class timelineViewAdapter extends RecyclerView.Adapter<timelineViewAdapte
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         final byte[] imageData = posts.get(position).imageData;
+        String name = posts.get(position).user_name;
 
         //byte(jpeg)→Bitmapに変換
         Bitmap bmp = BitmapFactory.decodeByteArray(imageData, 0, imageData.length);
@@ -62,6 +63,11 @@ public class timelineViewAdapter extends RecyclerView.Adapter<timelineViewAdapte
         Glide.with(context).load(bmp).into(holder.imageView);
         Glide.with(context).load(R.drawable.user).circleCrop().into(holder.userIcon);
 
+        if (name == null){
+            holder.userName.setText("user");
+        } else {
+            holder.userName.setText(name);
+        }
 
         holder.imageView.setOnClickListener(new View.OnClickListener() {
             @Override

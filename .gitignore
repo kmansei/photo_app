@@ -1,8 +1,9 @@
 .gradle/
 local.properties
-./server/images/*
-./server/DatabaseConnection.class
-./server/PhotoServer.class
+./server/images/
+*.png
+*.jpg
+*.class
 
 # IntelliJ IDEA project files
 .idea/

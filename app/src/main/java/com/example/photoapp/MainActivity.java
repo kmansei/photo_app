@@ -98,14 +98,20 @@ public class MainActivity extends AppCompatActivity {
                     byte[] imageData = baos.toByteArray();
                     int id = posts.size();
                     // タスクの生成
-                    Client client = new Client(id, imageData);
+
+                    String name = Data.user_name;
+                    if (name == null){
+                        name = "user";
+                    }
+
+                    Client client = new Client(id, imageData, name);
                     client.setOnCallBack(new Client.CallBackTask(){
                         @Override
-                        public void CallBack(List<byte[]> result) {
+                        public void CallBack(List<Post> result) {
                             super.CallBack(result);
                             //処理
                             for (int i=0; i<result.size(); i++){
-                                Post post = new Post(result.get(i));
+                                Post post = new Post(result.get(i).imageData, result.get(i).user_name);
                                 posts.add(0, post);
                                 mAdapter.notifyItemInserted(0);
                                 recyclerView.smoothScrollToPosition(0);
@@ -134,7 +140,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
-
         int itemId = item.getItemId();
         switch (itemId) {
             case R.id.updateButton:
@@ -144,14 +149,15 @@ public class MainActivity extends AppCompatActivity {
 
                 int id = posts.size();
                 // タスクの生成
-                Client client = new Client(id, null);
+
+                Client client = new Client(id, null, "user");
                 client.setOnCallBack(new Client.CallBackTask(){
                     @Override
-                    public void CallBack(List<byte[]> result) {
+                    public void CallBack(List<Post> result) {
                         super.CallBack(result);
                         //処理
                         for (int i=0; i<result.size(); i++){
-                            Post post = new Post(result.get(i));
+                            Post post = new Post(result.get(i).imageData, result.get(i).user_name);
                             posts.add(0, post);
                             mAdapter.notifyItemInserted(0);
                             recyclerView.smoothScrollToPosition(0);

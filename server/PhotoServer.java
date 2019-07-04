@@ -4,8 +4,10 @@ import java.util.*;
 import java.awt.*;
 import java.awt.image.*;
 import javax.imageio.*;
-import java.util.List;
 import java.io.File;
+import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 
 class PhotoServer {
     static final int PORT = 8080;
@@ -37,7 +39,6 @@ class ServerThread extends Thread {
     ObjectInputStream ois;
     ObjectOutputStream oos;
     String dir = "./images/";
-    List<String> paths;
     DatabaseConnection databaseConnection;
 
     ServerThread(Socket s) {
@@ -50,9 +51,14 @@ class ServerThread extends Thread {
         try {
             int id;
             byte[] img;
+            String user_name;
+
             String img_path = null;
             BufferedImage img_new = null;
-            List<byte[]> imgList = new ArrayList<byte[]>();
+
+            List<Post> posts = new ArrayList<>();
+            //DBの結果
+            List<Database> DBResults = new ArrayList<Database>();
 
             ois = new ObjectInputStream(s.getInputStream());
             //id取得
@@ -60,48 +66,44 @@ class ServerThread extends Thread {
             System.out.println("receive id: " + id);
             //画像のbyte配列取得
             img = (byte[]) ois.readObject();
-            System.out.println("receive post");
-            //ois.close();
-            
-            if(img != null){
+            System.out.println("receive image");
+            //ユーザーネーム取得
+            user_name = ois.readUTF();
+            System.out.println("receive user_name: "+ user_name);
+
             //画像の保存
-            img_path = saveImage(img);
+            if(img != null){
+                img_path = saveImage(img);
             }
 
-            paths = databaseConnection.Connect(id, img_path);
-            for (int i=0; i<paths.size(); i++){
-                //System.out.println(paths.get(i));
-                img_new = ImageIO.read(new File(paths.get(i)));
+            DBResults = databaseConnection.Connect(id, img_path, user_name);
+            for (int i=0; i<DBResults.size(); i++){
+                img_new = ImageIO.read(new File(DBResults.get(i).imagePath));
                 try{
                     ByteArrayOutputStream bos = new ByteArrayOutputStream();
                     BufferedOutputStream os = new BufferedOutputStream( bos );
                     img_new.flush();
                     ImageIO.write( img_new, "jpg", os ); //. jpg 型
                     byte[] byteimg = bos.toByteArray();
-                    imgList.add(byteimg);
+
+                    Post p = new Post(byteimg, DBResults.get(i).user_name);
+                    posts.add(p);
                 }catch( Exception e ){}
             }
 
-            // posts.add(p);
-            //databaseID++;
-
-            //ois.close();
-
-            // this is database zone
-
             oos = new ObjectOutputStream(s.getOutputStream());
-            oos.writeObject(imgList);
+
+            List<byte[]> images = new ArrayList<>();
+            posts.forEach(i -> images.add(i.imageData));
+
+            List<String> names = new ArrayList<>();
+            posts.forEach(i -> names.add(i.user_name));
+
+            oos.writeObject(images);
+            oos.writeObject(names);
+
             oos.flush();
             System.out.println("send images to client: " + s);
-            // System.out.println("send sublist");
-
-            // //ois = new ObjectInputStream(s.getInputStream());
-            // oos = new ObjectOutputStream(s.getOutputStream());
-            // System.out.println("init ois and oos");
-
-            // oos.writeObject(posts);
-            // oos.flush();
-            // System.out.println("send \"posts\" to client: " + s);
 
         } catch (Exception e) {
             System.out.println(e);
@@ -122,7 +124,7 @@ class ServerThread extends Thread {
             int latestID = databaseConnection.GetLatestId();
             String out_path = dir + String.valueOf(latestID) + ".jpg";
             FileOutputStream out = new FileOutputStream(out_path);
-            ImageIO.write( image, "png", out);
+            ImageIO.write( image, "jpg", out);
             System.out.println("image saved");
             return out_path;
         }catch( Exception e ){}

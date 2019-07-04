@@ -9,10 +9,11 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Client extends AsyncTask<Void, String, List<byte[]>> {
+public class Client extends AsyncTask<Void, String, List<Post>> {
     private CallBackTask callbacktask;
     private byte[] imageData;
     private int id;
+    private String user_name;
 
     static final int PORT = 8080;
     static Socket s;
@@ -22,21 +23,21 @@ public class Client extends AsyncTask<Void, String, List<byte[]>> {
     //接続先IP
     public static String ip = "192.168.0.8";
 
-    public Client(int currentId, byte[] images) {
+    public Client(int currentId, byte[] images, String name) {
         super();
         id = currentId;
         imageData = images;
+        user_name = name;
     }
 
     @Override
-    protected List<byte[]> doInBackground(Void... param){
-        List<byte[]> newImages = new ArrayList<byte[]>();
-        newImages = updatePosts(id, imageData);
-        return newImages;
+    protected List<Post> doInBackground(Void... param){
+        List<Post> posts = updatePosts(id, imageData, user_name);
+        return posts;
     }
 
     @Override
-    protected void onPostExecute(List<byte[]> result) {
+    protected void onPostExecute(List<Post> result) {
         super.onPostExecute(result);
         callbacktask.CallBack(result);
     }
@@ -46,14 +47,16 @@ public class Client extends AsyncTask<Void, String, List<byte[]>> {
     }
 
     public static class CallBackTask {
-        public void CallBack(List<byte[]> result) {
+        public void CallBack(List<Post> result) {
         }
     }
 
-    static List<byte[]> updatePosts(int id, byte[] image) {
+    static List<Post> updatePosts(int id, byte[] image, String user_name) {
 
         //int id = 3;
-        List<byte[]> newImages = new ArrayList<byte[]>();
+        List<Post> posts = new ArrayList<>();
+        List<byte[]> images = new ArrayList<>();
+        List<String> names = new ArrayList<>();
 
         try {
             Log.d("updatePosts", "start tcp");
@@ -66,26 +69,28 @@ public class Client extends AsyncTask<Void, String, List<byte[]>> {
 
             oos.writeObject(image);
             oos.flush();
-            System.out.println("send post");
+            System.out.println("send image");
 
-            //oos.close();
+            oos.writeUTF(user_name);
+            oos.flush();
+            System.out.println("send user_name");
 
             ois = new ObjectInputStream(s.getInputStream());
 
-            newImages = (List<byte[]>) ois.readObject();
-            Log.d("updatePosts", "received byte images");
+            images = (List<byte[]>) ois.readObject();
+            names = (List<String>) ois.readObject();
+
+            Log.d("updatePosts", "received posts");
+            for(int i=0; i<images.size(); i++){
+                Post p = new Post(images.get(i), names.get(i));
+                posts.add(p);
+            }
+
+            Log.d("updatePosts", "received posts");
 
         } catch (Exception e) {
             Log.d("updatePosts", "["+e+"]");
-        } /*finally {
-            try {
-                if (oos != null) {
-                    oos.close();
-                }
-            } catch (IOException ioe) {
-                System.out.println(ioe);
-            }
-        }*/
-        return newImages;
+        }
+        return posts;
     }
 }

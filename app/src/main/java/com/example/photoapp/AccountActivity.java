@@ -3,11 +3,11 @@ package com.example.photoapp;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
-import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
 
 public class AccountActivity extends AppCompatActivity {
@@ -29,8 +29,23 @@ public class AccountActivity extends AppCompatActivity {
         //アイコンの色を白くする
         toolbar.getNavigationIcon().setColorFilter(getResources().getColor(R.color.white), PorterDuff.Mode.SRC_ATOP);
 
-        EditText ip = findViewById(R.id.ipEdit);
+        final EditText ip = findViewById(R.id.ipEdit);
         ip.setText(Client.ip);
+
+        if (Data.user_name != null){
+            EditText user_name = findViewById(R.id.userEdit);
+            user_name.setText(Data.user_name);
+        }
+
+        //ボタンを押したとき
+        findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EditText user_name = findViewById(R.id.userEdit);
+                Data.user_name = user_name.getText().toString();
+                Client.ip = ip.getText().toString();
+            }
+        });
     }
 
     @Override
