@@ -6,6 +6,8 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,8 +16,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
 import java.io.ByteArrayOutputStream;
 import java.io.FileDescriptor;
 import java.io.IOException;
@@ -25,11 +25,39 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private static final int RESULT_PICK_IMAGEFILE = 1000;
+    private static final int RESULT_ACCOUNT = 500;
 
     List<Post> posts = new ArrayList<Post>();
     RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
     final RecyclerView.Adapter mAdapter = new timelineViewAdapter(this, posts);
     RecyclerView recyclerView;
+    MenuItem addButton;
+    Intent intent;
+
+    //ボトムナビゲーションの処理
+    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
+            = new BottomNavigationView.OnNavigationItemSelectedListener() {
+
+        @Override
+        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            switch (item.getItemId()) {
+                case R.id.navigation_home:
+                    return true;
+                case R.id.navigation_post:
+                    addButton = item;
+                    intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                    intent.addCategory(Intent.CATEGORY_OPENABLE);
+                    intent.setType("image/*");
+                    startActivityForResult(intent, RESULT_PICK_IMAGEFILE);
+                    return true;
+                case R.id.navigation_account:
+                    intent = new Intent(getApplicationContext(), AccountActivity.class);
+                    startActivityForResult(intent, RESULT_ACCOUNT);
+                    return true;
+            }
+            return false;
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,32 +70,25 @@ public class MainActivity extends AppCompatActivity {
 
         setSupportActionBar(toolbar);
 
-        Button button = findViewById(R.id.postButton);
+        BottomNavigationView navView = findViewById(R.id.bottomNavigationView);
+        navView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
         recyclerView = findViewById(R.id.timeline);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setAdapter(mAdapter);
-
-        //投稿ボタンが押されたら
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-                intent.addCategory(Intent.CATEGORY_OPENABLE);
-                intent.setType("image/*");
-                startActivityForResult(intent, RESULT_PICK_IMAGEFILE);
-            }
-        });
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
+        BottomNavigationView navView = findViewById(R.id.bottomNavigationView);
+        navView.setSelectedItemId(R.id.navigation_home);
+
         //ギャラリーから戻ってきたら
         if (requestCode == RESULT_PICK_IMAGEFILE && resultCode == RESULT_OK) {
             Uri uri = null;
             if (resultData != null) {
                 uri = resultData.getData();
-
+                addButton.setEnabled(false);
                 try {
                     Bitmap bmp = getBitmapFromUri(uri);
 
@@ -77,19 +98,26 @@ public class MainActivity extends AppCompatActivity {
                     byte[] imageData = baos.toByteArray();
                     int id = posts.size();
                     // タスクの生成
-                    Client client = new Client(id, imageData);
+
+                    String name = Data.user_name;
+                    if (name == null){
+                        name = "user";
+                    }
+
+                    Client client = new Client(id, imageData, name);
                     client.setOnCallBack(new Client.CallBackTask(){
                         @Override
-                        public void CallBack(List<byte[]> result) {
+                        public void CallBack(List<Post> result) {
                             super.CallBack(result);
                             //処理
                             for (int i=0; i<result.size(); i++){
-                                Post post = new Post(result.get(i));
+                                Post post = new Post(result.get(i).imageData, result.get(i).user_name);
                                 posts.add(0, post);
                                 mAdapter.notifyItemInserted(0);
                                 recyclerView.smoothScrollToPosition(0);
                                 Log.d("CallBack", "add new post");
                             }
+                            addButton.setEnabled(true);
                         }
                     });
 
@@ -97,6 +125,7 @@ public class MainActivity extends AppCompatActivity {
 
                 } catch (IOException e) {
                     e.printStackTrace();
+                    addButton.setEnabled(true);
                     Log.d("onActivityResult", "e");
                 }
             }
@@ -110,26 +139,33 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
+    public boolean onOptionsItemSelected(final MenuItem item) {
         int itemId = item.getItemId();
         switch (itemId) {
             case R.id.updateButton:
+                //ボタンを押せなくする
+                item.setEnabled(false);
+                item.setIcon(R.drawable.sync_disabled);
+
                 int id = posts.size();
                 // タスクの生成
-                Client client = new Client(id, null);
+
+                Client client = new Client(id, null, "user");
                 client.setOnCallBack(new Client.CallBackTask(){
                     @Override
-                    public void CallBack(List<byte[]> result) {
+                    public void CallBack(List<Post> result) {
                         super.CallBack(result);
                         //処理
                         for (int i=0; i<result.size(); i++){
-                            Post post = new Post(result.get(i));
+                            Post post = new Post(result.get(i).imageData, result.get(i).user_name);
                             posts.add(0, post);
                             mAdapter.notifyItemInserted(0);
                             recyclerView.smoothScrollToPosition(0);
                             Log.d("CallBack", "add new post");
                         }
+                        //ボタンを押せるようにする
+                        item.setEnabled(true);
+                        item.setIcon(R.drawable.sync);
                     }
                 });
 

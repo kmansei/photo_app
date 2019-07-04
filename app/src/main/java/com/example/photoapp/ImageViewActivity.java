@@ -3,6 +3,7 @@ package com.example.photoapp;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
@@ -37,6 +38,8 @@ public class ImageViewActivity extends AppCompatActivity {
         getSupportActionBar().setHomeButtonEnabled(true);
 
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+        //アイコンの色を白くする
+        toolbar.getNavigationIcon().setColorFilter(getResources().getColor(R.color.white), PorterDuff.Mode.SRC_ATOP);
 
         //画像のバイト配列をキャッシュファイルから読み込む
         byte[] jpgImage = null;
@@ -73,7 +76,6 @@ public class ImageViewActivity extends AppCompatActivity {
         return super.onTouchEvent(event);
     }
 
-    //ツールバーの各種アイコンが押されたときに呼ばれる(今は戻るボタンだけ)
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
