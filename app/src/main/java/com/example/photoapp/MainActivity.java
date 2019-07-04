@@ -4,9 +4,10 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,8 +16,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
 import java.io.ByteArrayOutputStream;
 import java.io.FileDescriptor;
 import java.io.IOException;
@@ -31,6 +30,30 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
     final RecyclerView.Adapter mAdapter = new timelineViewAdapter(this, posts);
     RecyclerView recyclerView;
+    MenuItem addButton;
+
+    //ボトムナビゲーションの処理
+    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
+            = new BottomNavigationView.OnNavigationItemSelectedListener() {
+
+        @Override
+        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            switch (item.getItemId()) {
+                case R.id.navigation_home:
+                    return true;
+                case R.id.navigation_post:
+                    addButton = item;
+                    Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                    intent.addCategory(Intent.CATEGORY_OPENABLE);
+                    intent.setType("image/*");
+                    startActivityForResult(intent, RESULT_PICK_IMAGEFILE);
+                    return true;
+                case R.id.navigation_account:
+                    return true;
+            }
+            return false;
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,22 +66,12 @@ public class MainActivity extends AppCompatActivity {
 
         setSupportActionBar(toolbar);
 
-        Button button = findViewById(R.id.postButton);
+        BottomNavigationView navView = findViewById(R.id.bottomNavigationView);
+        navView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
         recyclerView = findViewById(R.id.timeline);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setAdapter(mAdapter);
-
-        //投稿ボタンが押されたら
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-                intent.addCategory(Intent.CATEGORY_OPENABLE);
-                intent.setType("image/*");
-                startActivityForResult(intent, RESULT_PICK_IMAGEFILE);
-            }
-        });
     }
 
     @Override
@@ -68,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
             Uri uri = null;
             if (resultData != null) {
                 uri = resultData.getData();
-
+                addButton.setEnabled(false);
                 try {
                     Bitmap bmp = getBitmapFromUri(uri);
 
@@ -91,6 +104,7 @@ public class MainActivity extends AppCompatActivity {
                                 recyclerView.smoothScrollToPosition(0);
                                 Log.d("CallBack", "add new post");
                             }
+                            addButton.setEnabled(true);
                         }
                     });
 
@@ -98,6 +112,7 @@ public class MainActivity extends AppCompatActivity {
 
                 } catch (IOException e) {
                     e.printStackTrace();
+                    addButton.setEnabled(true);
                     Log.d("onActivityResult", "e");
                 }
             }
