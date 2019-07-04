@@ -76,7 +76,6 @@ public class ImageViewActivity extends AppCompatActivity {
         return super.onTouchEvent(event);
     }
 
-    //ツールバーの各種アイコンが押されたときに呼ばれる(今は戻るボタンだけ)
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();

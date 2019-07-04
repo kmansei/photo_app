@@ -25,12 +25,14 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private static final int RESULT_PICK_IMAGEFILE = 1000;
+    private static final int RESULT_ACCOUNT = 500;
 
     List<Post> posts = new ArrayList<Post>();
     RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
     final RecyclerView.Adapter mAdapter = new timelineViewAdapter(this, posts);
     RecyclerView recyclerView;
     MenuItem addButton;
+    Intent intent;
 
     //ボトムナビゲーションの処理
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -43,12 +45,14 @@ public class MainActivity extends AppCompatActivity {
                     return true;
                 case R.id.navigation_post:
                     addButton = item;
-                    Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                    intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
                     intent.addCategory(Intent.CATEGORY_OPENABLE);
                     intent.setType("image/*");
                     startActivityForResult(intent, RESULT_PICK_IMAGEFILE);
                     return true;
                 case R.id.navigation_account:
+                    intent = new Intent(getApplicationContext(), AccountActivity.class);
+                    startActivityForResult(intent, RESULT_ACCOUNT);
                     return true;
             }
             return false;
@@ -76,6 +80,9 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
+        BottomNavigationView navView = findViewById(R.id.bottomNavigationView);
+        navView.setSelectedItemId(R.id.navigation_home);
+
         //ギャラリーから戻ってきたら
         if (requestCode == RESULT_PICK_IMAGEFILE && resultCode == RESULT_OK) {
             Uri uri = null;
