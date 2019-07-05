@@ -1,12 +1,11 @@
 import java.io.Serializable;
-import java.util.Date;
 
-class Post implements Serializable {
-    Byte[] bmp;
-    String text;
-    Date date;
-    String userName;
-    Post(Byte[] bmp) {
-        this.bmp = bmp;
-    }
+public class Post implements Serializable {
+  public byte[] imageData;
+  public String user_name;
+
+  public Post(byte[] ImageData, String name){
+    this.imageData = ImageData;
+    this.user_name = name;
+  }
 }
