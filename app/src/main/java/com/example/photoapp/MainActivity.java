@@ -115,7 +115,6 @@ public class MainActivity extends AppCompatActivity {
                                 posts.add(0, post);
                                 mAdapter.notifyItemInserted(0);
                                 recyclerView.smoothScrollToPosition(0);
-                                Log.d("CallBack", "add new post");
                             }
                             addButton.setEnabled(true);
                         }
@@ -126,7 +125,6 @@ public class MainActivity extends AppCompatActivity {
                 } catch (IOException e) {
                     e.printStackTrace();
                     addButton.setEnabled(true);
-                    Log.d("onActivityResult", "e");
                 }
             }
         }

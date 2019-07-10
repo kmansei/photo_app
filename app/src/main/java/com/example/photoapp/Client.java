@@ -22,7 +22,7 @@ public class Client extends AsyncTask<Void, String, List<Post>> {
 
     //接続先IP
     //public static String ip = "192.168.0.8";
-    public static String ip = "10.24.85.133";
+    public static String ip = "10.24.87.229";
 
     public Client(int currentId, byte[] images, String name) {
         super();
@@ -67,31 +67,24 @@ public class Client extends AsyncTask<Void, String, List<Post>> {
 
             oos.writeInt(id);
             oos.flush();
-            System.out.println("send id");
 
             oos.writeObject(image);
             oos.flush();
-            System.out.println("send image");
 
             oos.writeUTF(user_name);
             oos.flush();
-            System.out.println("send user_name");
 
             ois = new ObjectInputStream(s.getInputStream());
 
             images = (List<byte[]>) ois.readObject();
             names = (List<String>) ois.readObject();
 
-            Log.d("updatePosts", "received posts");
             for(int i=0; i<images.size(); i++){
                 Post p = new Post(images.get(i), names.get(i));
                 posts.add(p);
             }
 
-            Log.d("updatePosts", "received posts");
-
         } catch (Exception e) {
-            Log.d("updatePosts", "["+e+"]");
         }
         return posts;
     }

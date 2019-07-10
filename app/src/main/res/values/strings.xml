@@ -6,12 +6,12 @@
     <string name="title_activity_image_view">ImageViewActivity</string>
     <string name="user">user</string>
     <string name="usericon">userIcon</string>
-    <string name="user_name_jp">ユーザー名</string>
-    <string name="ip_jp">サーバーIP</string>
-    <string name="update">更新</string>
+    <string name="user_name_jp" translatable="false">ユーザー名</string>
+    <string name="ip_jp" translatable="false">サーバーIP</string>
+    <string name="update" translatable="false">更新</string>
     <string name="title_activity_main2">Main2Activity</string>
     <string name="title_home">Home</string>
     <string name="title_post">Post</string>
     <string name="title_account">Account</string>
-    <string name="save">保存</string>
+    <string name="save" translatable="false">保存</string>
 </resources>
